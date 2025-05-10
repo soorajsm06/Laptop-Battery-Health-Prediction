@@ -1,0 +1,5 @@
+Flask>=2.0.0
+Flask-CORS>=3.0.0
+pandas>=1.0.0
+scikit-learn>=0.24.0 # Or just joblib if only using joblib.load
+joblib>=1.0.0
