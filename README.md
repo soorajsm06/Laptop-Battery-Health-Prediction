@@ -1,6 +1,6 @@
 # Firebase Studio - Laptop Battery Forecaster
 
-This is a Next.js application that predicts laptop battery life using a Python backend for the core model prediction and Genkit AI for explanations and visualizations.
+This is a Next.js application that predicts laptop battery life using a Python backend for the core model prediction.
 
 ## Getting Started
 
@@ -24,11 +24,7 @@ This is a Next.js application that predicts laptop battery life using a Python b
     Create a `.env` file in the root of the project (if it doesn't exist) and add the following:
     ```
     FLASK_API_URL=http://127.0.0.1:5001
-    
-    # If using Google AI with Genkit, add your API key:
-    # GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY 
     ```
-    Replace `YOUR_GOOGLE_API_KEY` with your actual Google AI API key if you intend to use Genkit's Google AI plugin.
 
 3.  **Run the Frontend Development Server:**
     ```bash
@@ -84,19 +80,6 @@ The Flask backend serves the machine learning model prediction.
     ```
     The Flask API will be available at `http://127.0.0.1:5001`. The Next.js app is configured to send requests to this URL.
 
-### 3. Genkit Development (Optional)
-
-If you are developing Genkit flows:
-
-1.  **Run the Genkit Development Server:**
-    In a separate terminal, from the project root:
-    ```bash
-    npm run genkit:watch
-    # or
-    # yarn genkit:watch
-    ```
-    This will start the Genkit development server, typically on port 4000, allowing you to inspect and test flows.
-
 ## Project Structure
 
 *   `src/app/`: Next.js App Router pages and layouts.
@@ -105,9 +88,6 @@ If you are developing Genkit flows:
 *   `src/components/`: React components.
     *   `battery-form.tsx`: Form for user input.
     *   `prediction-display.tsx`: Component to display prediction results.
-*   `src/ai/`: Genkit AI related code.
-    *   `genkit.ts`: Genkit initialization.
-    *   `flows/`: Genkit flows for explanation and visualization.
 *   `src/lib/`: Shared TypeScript types and utility functions.
 *   `python-api/`: Flask backend for model serving.
     *   `app.py`: Flask application logic.
@@ -121,9 +101,6 @@ If you are developing Genkit flows:
 3.  The Server Action sends the form data to the Flask backend (`python-api/app.py`) at the `/predict` endpoint.
 4.  The Flask backend loads `model1.pkl` (or uses the mock), preprocesses the input, and makes a prediction.
 5.  The Flask backend returns the `predictedTimeLeftSeconds` to the Next.js Server Action.
-6.  The Server Action then uses this prediction along with the input data to call Genkit AI flows (`src/ai/flows/`):
-    *   `explainBatteryPrediction`: Generates a textual explanation of the prediction.
-    *   `visualizeFeatureImportance`: Generates a (mocked) feature importance plot.
-7.  The results (prediction, explanation, plot URI) are returned to the frontend and displayed using `src/components/prediction-display.tsx`.
+6.  The result (`predictedTimeLeftSeconds`) is returned to the frontend and displayed using `src/components/prediction-display.tsx`.
 
 To get started, take a look at `src/app/page.tsx`.

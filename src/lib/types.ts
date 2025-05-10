@@ -16,8 +16,6 @@ export type BatteryInput = z.infer<typeof BatteryInputSchema>;
 
 export interface PredictionData {
   predictedTimeLeftSeconds?: number;
-  explanation?: string;
-  featureImportancePlotUri?: string;
   error?: string;
 }
 

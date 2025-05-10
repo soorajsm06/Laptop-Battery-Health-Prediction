@@ -5,7 +5,7 @@ import { BatteryForm } from '@/components/battery-form';
 import { PredictionDisplay } from '@/components/prediction-display';
 import { EvaluationMetrics } from '@/components/evaluation-metrics';
 import type { PredictionData } from '@/lib/types';
-import { BatteryCharging, BarChartHorizontalBig, BookOpenCheck } from 'lucide-react';
+import { BatteryCharging, BarChartHorizontalBig, BookOpenCheck, Activity } from 'lucide-react';
 import Image from 'next/image';
 
 export default function Home() {
@@ -31,7 +31,7 @@ export default function Home() {
           </h1>
         </div>
         <p className="text-lg text-muted-foreground">
-          Input your laptop's battery details to get an AI-powered life expectancy forecast and understand the key factors.
+          Input your laptop's battery details to get a life expectancy forecast from your model.
         </p>
       </header>
 
@@ -58,8 +58,8 @@ export default function Home() {
           {predictionResult ? (
             <div>
               <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-                <BarChartHorizontalBig size={28} className="text-accent" />
-                Forecast & Insights
+                <Activity size={28} className="text-accent" />
+                Forecast Result
               </h2>
               <PredictionDisplay data={predictionResult} />
             </div>
@@ -75,7 +75,7 @@ export default function Home() {
               />
               <h3 className="text-xl font-medium text-muted-foreground">Awaiting Battery Data</h3>
               <p className="text-muted-foreground">
-                Enter your battery information to see the forecast and AI-driven insights.
+                Enter your battery information to see the forecast.
               </p>
             </div>
           )}
@@ -84,7 +84,7 @@ export default function Home() {
 
       <footer className="w-full max-w-5xl mt-12 pt-8 border-t border-border text-center">
         <p className="text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} Laptop Battery Forecaster. Powered by AI.
+          &copy; {new Date().getFullYear()} Laptop Battery Forecaster.
         </p>
       </footer>
     </div>
