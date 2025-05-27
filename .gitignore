@@ -9,8 +9,10 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-python-api\venv
-python-api\__pycache__
+.python-api/venv
+.pyhon-api\__pycache__
+venv
+__pycache__
 # testing
 /coverage
 
