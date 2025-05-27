@@ -15,6 +15,7 @@ import { predictBatteryLife } from '@/app/actions';
 import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Laptop, BatteryCharging, BatteryFull, Zap, Timer, Bolt, BatteryPlus, Rocket, CheckCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface BatteryFormProps {
   onPredictionResult: (data: any) => void; // Callback to pass result to parent
@@ -23,8 +24,24 @@ interface BatteryFormProps {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full sm:w-auto text-base py-3 px-8" size="lg">
-      <Rocket size={20} className="mr-2.5" />
+    <Button 
+      type="submit" 
+      disabled={pending} 
+      className={cn(
+        "w-full sm:w-auto text-base py-3 px-8 transition-all duration-300 ease-in-out transform hover:scale-105 focus-visible:ring-2",
+        pending 
+          ? "bg-orange-500 hover:bg-orange-600 focus-visible:ring-orange-400 text-white" 
+          : "text-primary-foreground" // bg-primary is default from Button variant, text-primary-foreground ensures correct text color
+      )}
+      size="lg"
+    >
+      <Rocket 
+        size={20} 
+        className={cn(
+            "mr-2.5",
+            pending && "animate-pulse"
+        )} 
+      />
       {pending ? 'Forecasting...' : 'Forecast Battery Life'}
     </Button>
   );
@@ -64,8 +81,8 @@ export function BatteryForm({ onPredictionResult }: BatteryFormProps) {
         toast({
           title: 'Forecast Successful!',
           description: 'Prediction has been generated and displayed.',
-          variant: 'default', // 'default' is often green or neutral
-          action: <CheckCircle className="text-green-500" />, // Example, might need custom toast for icons
+          variant: 'default', 
+          action: <CheckCircle className="text-green-500" />, 
         });
       }
     }
