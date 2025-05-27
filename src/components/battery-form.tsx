@@ -61,7 +61,6 @@ export function BatteryForm({ onPredictionResult }: BatteryFormProps) {
       state: BatteryStateEnum.options[0], // Default to 'Active'
       capacityPercentage: 80,
       designCapacityMah: 42000,
-      drainedMwh: 500,
       durationSeconds: 3600,
       currentEnergyMwh: 30000,
       fullChargeCapacityMah: 40000,
@@ -129,11 +128,11 @@ export function BatteryForm({ onPredictionResult }: BatteryFormProps) {
             {errors.currentEnergyMwh && <p className="text-xs text-destructive pt-1">{errors.currentEnergyMwh.message}</p>}
           </div>
           
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="drainedMwh" className="flex items-center gap-1.5 text-sm font-medium"><Zap size={16} className="text-muted-foreground" />Energy Drained (mWh)</Label>
             <Input id="drainedMwh" type="number" {...register('drainedMwh')} placeholder="e.g., 500" />
             {errors.drainedMwh && <p className="text-xs text-destructive pt-1">{errors.drainedMwh.message}</p>}
-          </div>
+          </div> */}
 
           <div className="space-y-2">
             <Label htmlFor="durationSeconds" className="flex items-center gap-1.5 text-sm font-medium"><Timer size={16} className="text-muted-foreground" />Duration of Drain (s)</Label>

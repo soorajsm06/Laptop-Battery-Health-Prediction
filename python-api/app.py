@@ -45,7 +45,7 @@ def predict_battery_life(input_data: dict) -> float:
         'drain_rate': 0,
         'state': 'State',
         'durationSeconds': 'Duration Seconds',
-        'drainedMwh': 'Drained',
+        'drainedMwh': 0,
         'fullChargeCapacityMah': 'Full Charge Capacity',
         'designCapacityMah': 'Design Capacity'
 
@@ -53,6 +53,12 @@ def predict_battery_life(input_data: dict) -> float:
     features.rename(columns=feature_mapping, inplace=True)
 
     # --- Feature Engineering ---
+    # Calculate Drained as the difference between full charge and current percentage
+    if 'Full Charge Capacity' in features.columns and 'Capacity' in features.columns:
+        features['Drained'] = features['Full Charge Capacity'] - (features['Full Charge Capacity'] * features['Capacity'] / 100)
+    else:
+        features['Drained'] = 0  # Default if data is missing
+
     # Calculate drain_rate_mwh_per_sec
     if 'Drained' in features.columns and 'Duration Seconds' in features.columns:
         features['drain_rate'] = features['Drained'] / features['Duration Seconds']
@@ -102,7 +108,7 @@ def predict():
 
     # Validate required fields
     required_fields = [
-        'state', 'capacityPercentage', 'designCapacityMah', 'drainedMwh',
+        'state', 'capacityPercentage', 'designCapacityMah',
         'durationSeconds', 'currentEnergyMwh', 'fullChargeCapacityMah'
     ]
     missing_fields = [field for field in required_fields if field not in input_data]

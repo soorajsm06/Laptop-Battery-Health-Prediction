@@ -10,12 +10,13 @@
 !.yarn/releases
 !.yarn/versions
 .python-api/venv
-.pyhon-api\__pycache__
-venv
+__pycache__
+.venv/
 __pycache__
 # testing
 /coverage
-
+.vscode
+.idx
 # next.js
 /.next/
 /out/
