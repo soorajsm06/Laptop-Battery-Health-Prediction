@@ -14,7 +14,7 @@ MODEL = None
 def load_model():
     """Loads the pre-trained Random Forest model."""
     global MODEL
-    model_path = os.path.join(os.path.dirname(__file__), 'model1.pkl')
+    model_path = os.path.join(os.path.dirname(__file__), 'model2.pkl')
     if os.path.exists(model_path):
         try:
             MODEL = joblib.load(model_path)  # Load the Random Forest model
