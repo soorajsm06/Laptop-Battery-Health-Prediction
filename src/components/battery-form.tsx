@@ -1,20 +1,20 @@
+
 'use client';
 
 import type { BatteryInput } from '@/lib/types';
 import { BatteryInputSchema, BatteryStateEnum } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFormState, useFormStatus } from 'react-dom';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea'; // For displaying errors, if needed
 import { predictBatteryLife } from '@/app/actions';
 import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Laptop, BatteryCharging, BatteryFull, Zap, Timer, Bolt, BatteryPlus, AlertCircle } from 'lucide-react';
+import { Laptop, BatteryCharging, BatteryFull, Zap, Timer, Bolt, BatteryPlus, Rocket } from 'lucide-react';
 
 interface BatteryFormProps {
   onPredictionResult: (data: any) => void; // Callback to pass result to parent
@@ -23,7 +23,8 @@ interface BatteryFormProps {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full sm:w-auto">
+    <Button type="submit" disabled={pending} className="w-full sm:w-auto text-base py-3 px-6" size="lg">
+      <Rocket size={18} className="mr-2" />
       {pending ? 'Forecasting...' : 'Forecast Battery Life'}
     </Button>
   );
@@ -35,14 +36,10 @@ export function BatteryForm({ onPredictionResult }: BatteryFormProps) {
 
   const {
     register,
-    handleSubmit,
-    control,
     formState: { errors },
-    setValue,
-    reset,
   } = useForm<BatteryInput>({
     resolver: zodResolver(BatteryInputSchema),
-    defaultValues: { // Provide sensible defaults
+    defaultValues: { 
       state: 'Active',
       capacityPercentage: 80,
       designCapacityMah: 42000,
@@ -58,33 +55,32 @@ export function BatteryForm({ onPredictionResult }: BatteryFormProps) {
       onPredictionResult(state);
       if (state.error) {
         toast({
-          title: 'Error',
+          title: 'Error Submitting Form',
           description: state.error,
           variant: 'destructive',
+        });
+      } else if (state.predictedTimeLeftSeconds !== undefined) {
+        toast({
+          title: 'Forecast Successful',
+          description: 'Prediction has been generated.',
+          variant: 'default',
         });
       }
     }
   }, [state, onPredictionResult, toast]);
   
-  // Set initial values for Select component, as it's controlled by react-hook-form's Controller
-  // This is just an example of one way to handle Select with RHF.
-  // For this specific ShadCN Select, direct register might work or a Controller is more robust.
-  // Given we use server actions, the default react-hook-form `handleSubmit` isn't used for submission,
-  // but it's good for client-side validation.
-  // However, with useFormState, we rely more on server-side validation after submission.
-
   return (
-    <Card className="w-full max-w-2xl shadow-xl">
-      <CardHeader>
-        <CardTitle className="text-2xl font-semibold">Enter Battery Information</CardTitle>
-        <CardDescription>Provide your laptop's current battery metrics to get a forecast.</CardDescription>
+    <Card className="w-full max-w-3xl shadow-xl border-primary/10">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-xl font-semibold">Enter Battery Metrics</CardTitle>
+        <CardDescription>Provide your laptop's current battery data to get a forecast.</CardDescription>
       </CardHeader>
       <form action={formAction}>
-        <CardContent className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="state" className="flex items-center gap-2"><Laptop size={16} />State</Label>
-            <Select defaultValue="Active" name="state">
-              <SelectTrigger id="state">
+        <CardContent className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 p-6 pt-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="state" className="flex items-center gap-1.5 text-sm font-medium"><Laptop size={15} className="text-muted-foreground" />State</Label>
+            <Select defaultValue="Active" name="state" >
+              <SelectTrigger id="state" className="w-full">
                 <SelectValue placeholder="Select battery state" />
               </SelectTrigger>
               <SelectContent>
@@ -95,46 +91,46 @@ export function BatteryForm({ onPredictionResult }: BatteryFormProps) {
                 ))}
               </SelectContent>
             </Select>
-            {errors.state && <p className="text-sm text-destructive">{errors.state.message}</p>}
+            {errors.state && <p className="text-xs text-destructive pt-1">{errors.state.message}</p>}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="capacityPercentage" className="flex items-center gap-2"><BatteryCharging size={16} />Current Capacity (%)</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="capacityPercentage" className="flex items-center gap-1.5 text-sm font-medium"><BatteryCharging size={15} className="text-muted-foreground" />Current Capacity (%)</Label>
             <Input id="capacityPercentage" type="number" {...register('capacityPercentage')} placeholder="e.g., 80" />
-            {errors.capacityPercentage && <p className="text-sm text-destructive">{errors.capacityPercentage.message}</p>}
+            {errors.capacityPercentage && <p className="text-xs text-destructive pt-1">{errors.capacityPercentage.message}</p>}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="currentEnergyMwh" className="flex items-center gap-2"><Bolt size={16} />Current Energy (mWh)</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="currentEnergyMwh" className="flex items-center gap-1.5 text-sm font-medium"><Bolt size={15} className="text-muted-foreground" />Current Energy (mWh)</Label>
             <Input id="currentEnergyMwh" type="number" {...register('currentEnergyMwh')} placeholder="e.g., 30000" />
-            {errors.currentEnergyMwh && <p className="text-sm text-destructive">{errors.currentEnergyMwh.message}</p>}
+            {errors.currentEnergyMwh && <p className="text-xs text-destructive pt-1">{errors.currentEnergyMwh.message}</p>}
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="drainedMwh" className="flex items-center gap-2"><Zap size={16} />Energy Drained/Consumed (mWh)</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="drainedMwh" className="flex items-center gap-1.5 text-sm font-medium"><Zap size={15} className="text-muted-foreground" />Energy Drained (mWh)</Label>
             <Input id="drainedMwh" type="number" {...register('drainedMwh')} placeholder="e.g., 500" />
-            {errors.drainedMwh && <p className="text-sm text-destructive">{errors.drainedMwh.message}</p>}
+            {errors.drainedMwh && <p className="text-xs text-destructive pt-1">{errors.drainedMwh.message}</p>}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="durationSeconds" className="flex items-center gap-2"><Timer size={16} />Duration of Drain (s)</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="durationSeconds" className="flex items-center gap-1.5 text-sm font-medium"><Timer size={15} className="text-muted-foreground" />Duration of Drain (s)</Label>
             <Input id="durationSeconds" type="number" {...register('durationSeconds')} placeholder="e.g., 3600 (for 1 hour)" />
-            {errors.durationSeconds && <p className="text-sm text-destructive">{errors.durationSeconds.message}</p>}
+            {errors.durationSeconds && <p className="text-xs text-destructive pt-1">{errors.durationSeconds.message}</p>}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="designCapacityMah" className="flex items-center gap-2"><BatteryFull size={16} />Design Capacity (mAh)</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="designCapacityMah" className="flex items-center gap-1.5 text-sm font-medium"><BatteryFull size={15} className="text-muted-foreground" />Design Capacity (mAh)</Label>
             <Input id="designCapacityMah" type="number" {...register('designCapacityMah')} placeholder="e.g., 42180" />
-            {errors.designCapacityMah && <p className="text-sm text-destructive">{errors.designCapacityMah.message}</p>}
+            {errors.designCapacityMah && <p className="text-xs text-destructive pt-1">{errors.designCapacityMah.message}</p>}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="fullChargeCapacityMah" className="flex items-center gap-2"><BatteryPlus size={16} />Full Charge Capacity (mAh)</Label>
+          <div className="sm:col-span-2 space-y-1.5">
+            <Label htmlFor="fullChargeCapacityMah" className="flex items-center gap-1.5 text-sm font-medium"><BatteryPlus size={15} className="text-muted-foreground" />Full Charge Capacity (mAh)</Label>
             <Input id="fullChargeCapacityMah" type="number" {...register('fullChargeCapacityMah')} placeholder="e.g., 41000" />
-            {errors.fullChargeCapacityMah && <p className="text-sm text-destructive">{errors.fullChargeCapacityMah.message}</p>}
+            {errors.fullChargeCapacityMah && <p className="text-xs text-destructive pt-1">{errors.fullChargeCapacityMah.message}</p>}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-end pt-6">
+        <CardFooter className="flex justify-end pt-4 pb-6 px-6 border-t border-border mt-2">
           <SubmitButton />
         </CardFooter>
       </form>

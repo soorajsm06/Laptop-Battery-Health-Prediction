@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 export const BatteryStateEnum = z.enum(['Active', 'Idle', 'Sleep', 'Connected standby']);
@@ -23,4 +24,5 @@ export interface FormattedPrediction {
   hours: number;
   minutes: number;
   seconds: number;
+  error?: string; // Added to handle potential formatting errors
 }
